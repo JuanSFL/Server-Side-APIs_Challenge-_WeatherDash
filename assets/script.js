@@ -11,7 +11,7 @@ var currentCity;
 
 function get5DayWeather(data) {
   // 5 day forecast API
-  var requestUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${data.lat}&lon=${data.lon}&exclude=minutely,hourly,alerts&units=imperial&appid=${APIkey}`
+  var requestUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${data.lat}&lon=${data.lon}&units=imperial&appid=${APIkey}`
   fetch(requestUrl)
     .then(function (response) {
       return response.json();
@@ -40,6 +40,27 @@ function get5DayWeather(data) {
       currentWeatherIconEl.attr("src", "http://openweathermap.org/img/wn/" + currentCityWeatherIcon + ".png");
       cityNameEl.append(currentWeatherIconEl);
 
+      // get current UV index, and set background color based on level
+      var currentCityUV = data.current.uvi;
+      var currentUvEl = $('<h4>');
+      var currentUvSpanEl = $('<span>');
+      currentUvEl.append(currentUvSpanEl);
+
+      currentUvSpanEl.text(`UV: ${currentCityUV}`)
+      // UV index colors
+      if (currentCityUV < 3) {
+        currentUvSpanEl.css({ 'background-color': 'green', 'color': 'white' });
+      } else if (currentCityUV < 6) {
+        currentUvSpanEl.css({ 'background-color': 'yellow', 'color': 'black' });
+      } else if (currentCityUV < 8) {
+        currentUvSpanEl.css({ 'background-color': 'orange', 'color': 'white' });
+      } else if (currentCityUV < 11) {
+        currentUvSpanEl.css({ 'background-color': 'red', 'color': 'white' });
+      } else {
+        currentUvSpanEl.css({ 'background-color': 'violet', 'color': 'white' });
+      }
+      currentWeatherEl.append(currentUvEl);
+            
       // current temperature
       var currentCityTemp = data.current.temp;
       var currentTempEl = $('<p>')
@@ -58,31 +79,51 @@ function get5DayWeather(data) {
       currentHumidityEl.text(`Humidity: ${currentCityHumidity}%`)
       currentWeatherEl.append(currentHumidityEl);
 
-      // get current UV index, set background color based on level and display
-      var currentCityUV = data.current.uvi;
-      var currentUvEl = $('<p>');
-      var currentUvSpanEl = $('<span>');
-      currentUvEl.append(currentUvSpanEl);
+      // 5 day forecast
+      var fiveDayForecastHeaderEl = $('#fiveDayForecastHeader');
+      var fiveDayHeaderEl = $('<h2>');
+      fiveDayHeaderEl.text('5-Day Forecast:');
+      fiveDayForecastHeaderEl.append(fiveDayHeaderEl);
 
-      currentUvSpanEl.text(`UV: ${currentCityUV}`)
+      var fiveDayForecastEl = $('#fiveDayForecast');
 
-      if (currentCityUV < 3) {
-        currentUvSpanEl.css({ 'background-color': 'green', 'color': 'white' });
-      } else if (currentCityUV < 6) {
-        currentUvSpanEl.css({ 'background-color': 'yellow', 'color': 'black' });
-      } else if (currentCityUV < 8) {
-        currentUvSpanEl.css({ 'background-color': 'orange', 'color': 'white' });
-      } else if (currentCityUV < 11) {
-        currentUvSpanEl.css({ 'background-color': 'red', 'color': 'white' });
-      } else {
-        currentUvSpanEl.css({ 'background-color': 'violet', 'color': 'white' });
+      // get weather info from five day forecast API and display
+      for (var i = 1; i <= 5; i++) {
+        var date;
+        var temp;
+        var icon;
+        var wind;
+        var humidity;
+
+        date = data.daily[i].dt;
+        date = moment.unix(date).format("MM/DD/YYYY");
+
+        temp = data.daily[i].temp.day;
+        icon = data.daily[i].weather[0].icon;
+        wind = data.daily[i].wind_speed;
+        humidity = data.daily[i].humidity;
+
+        //creates a card for the next five days.
+        var card = document.createElement('div');
+        card.classList.add('card', 'col-2', 'm-1', 'text-dark', 'border-dark');
+
+        // defines card elements and append it to the card.
+        var cardEl = document.createElement('div');
+        cardEl.classList.add('card-body');
+        cardEl.innerHTML = `<h5>${date}</h5>
+         <img src= "http://openweathermap.org/img/wn/${icon}.png"> </>
+         <br>
+        ${temp}°F<br>
+        ${wind} MPH <br>
+        ${humidity}%`
+
+        card.appendChild(cardEl);
+        fiveDayForecastEl.append(card);
       }
-
-      currentWeatherEl.append(currentUvEl);
-
     })
-  return
+  return;
 }
+
 
 // ONE CALL API
 function getCoordinates(cityname) {
@@ -100,7 +141,7 @@ function getCoordinates(cityname) {
     })
     .then(function (data) {
       console.log(data)
-      // check how data is return to see how to navigate to desired location.
+      // check how data is returned to see how to navigate to desired location.
       var cityInfo = {
         city: currentCity,
         lon: data.city.coord.lon,
@@ -114,7 +155,7 @@ function getCoordinates(cityname) {
       get5DayWeather(cityInfo)
     })
 }
-// will display previous cities as buttons
+// displays previous cities using local storage and set as buttons 
 function displaySearchHistory() {
   var storedCities = JSON.parse(localStorage.getItem("cities")) || [];
   var pastSearchesEl = document.getElementById('past-searches');
@@ -165,17 +206,23 @@ function getPastCity(event) {
   }
   return;
 }
-// clears the curreent city weather to allow room for a new result.
+// clears the current city weather to allow room for a new result.
 function clearCurrentCityWeather() {
   currentConditionsEl = document.getElementById("currentConditions");
   currentConditionsEl.innerHTML = '';
+
+  var fiveDayForecastHeaderEl = document.getElementById("fiveDayForecastHeader");
+  fiveDayForecastHeaderEl.innerHTML = '';
+
+  var fiveDayForecastEl = document.getElementById("fiveDayForecast");
+  fiveDayForecastEl.innerHTML = '';
   return;
 }
-// searches the weather for a given city, and clears the current city weather if there is any.
+// searches for the weather of a given city by coordinates, and clears the current city weather if there is any.
 function handleCityFormSubmit(event) {
   event.preventDefault();
   currentCity = cityInputEl.val().trim();
-  //clear currenct city weather
+  //clear current city weather
   clearCurrentCityWeather();
   getCoordinates(currentCity);
   return;
@@ -190,7 +237,7 @@ function handleClearHistory(event) {
   return;
 }
 
-displaySearchHistory();
+
 // buttons
 
 searchBtn.on("click", handleCityFormSubmit);
@@ -198,4 +245,5 @@ searchBtn.on("click", handleCityFormSubmit);
 clearBtn.on("click", handleClearHistory);
 
 pastSearchedCitiesEl.on("click", getPastCity);
+
 
