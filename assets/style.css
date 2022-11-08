@@ -1,6 +1,26 @@
+header{
+    font-style: italic;
+}
 #currentConditions{
     background-color: rgb(187, 187, 187);
 }
 .card{
     background-color: rgb(187, 187, 187);
 }
+.card:hover{
+    
+    background-color: rgb(0 0 0);
+    color: white;
+    box-shadow: 10px 10px 15px rgb(97, 97, 97);
+    transition: all .4s;
+    transform: scale(1.1);
+}
+button:hover{
+box-shadow: 10px 10px 15px rgb(97, 97, 97);;
+}
+
+.past-city:hover{
+ transform: scale(1.1);
+ transition: all .4s;
+}
+

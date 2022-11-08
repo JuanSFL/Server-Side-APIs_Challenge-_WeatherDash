@@ -100,15 +100,15 @@ function get5DayWeather(data) {
 
         temp = data.daily[i].temp.day;
         icon = data.daily[i].weather[0].icon;
-        wind = data.daily[i].wind_speed;
-        humidity = data.daily[i].humidity;
+        wind = "Wind Speed: " + data.daily[i].wind_speed;
+        humidity = "Humidity: " + data.daily[i].humidity;
 
         //creates a card for the next five days.
         var card = document.createElement('div');
-        card.classList.add('card', 'col-2', 'm-1', 'text-dark', 'border-dark');
+        card.classList.add('card', 'row', 'm-2', 'border-dark');
 
         // defines card elements and append it to the card.
-        var cardEl = document.createElement('div');
+        var cardEl = document.createElement('section');
         cardEl.classList.add('card-body');
         cardEl.innerHTML = `<h5>${date}</h5>
          <img src= "http://openweathermap.org/img/wn/${icon}.png"> </>
@@ -133,7 +133,7 @@ function getCoordinates(cityname) {
 
   fetch(requestUrl)
     .then(function (response) {
-      if (response.status >= 200 && response.status <= 299) {
+      if (response.status === 200) {
         return response.json();
       } else {
         throw Error(response.statusText);
