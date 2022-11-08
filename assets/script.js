@@ -105,7 +105,7 @@ function get5DayWeather(data) {
 
         //creates a card for the next five days.
         var card = document.createElement('div');
-        card.classList.add('card', 'row', 'm-2', 'border-dark');
+        card.classList.add('card', 'm-3', 'border-dark');
 
         // defines card elements and append it to the card.
         var cardEl = document.createElement('section');
