@@ -108,7 +108,7 @@ function get5DayWeather(data) {
         card.classList.add('card', 'm-3', 'border-dark');
 
         // defines card elements and append it to the card.
-        var cardEl = document.createElement('section');
+        var cardEl = document.createElement('div');
         cardEl.classList.add('card-body');
         cardEl.innerHTML = `<h5>${date}</h5>
          <img src= "http://openweathermap.org/img/wn/${icon}.png"> </>
