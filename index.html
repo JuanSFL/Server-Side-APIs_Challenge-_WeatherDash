@@ -19,27 +19,30 @@
 
   <header class="row text-center bg-danger text-white font-italics">
     <h1>Weather Dashboard <i class="fa-solid fa-cloud-bolt"></i></h1>
+    <p id = "currentDay"></p>
   </header>
 
   <main class="row">
       
       <aside class="column col-3">
+        <!-- search box -->
         <form>
           <label class="text-danger">Search for a City:</label>
-          <input class="form-control border-danger my-3 text-danger" type="search" placeholder="Search" id="city-input">
-          <button class="btn btn-outline-danger my-3" style="width: 100%" type="submit" id="search-button">Search</button>
+          <input class="form-control border-danger my-3 text-danger" type="search" placeholder="Search" id="cityInput">
+          <!-- search button -->
+          <button class="btn btn-outline-danger my-3" style="width: 100%" type="submit" id="searchBtn">Search</button>
         </form>
 
-        <button class="btn btn-outline-danger my-3" style="width: 100%" type="submit" id="clear-button">Clear History</button>
+        <button class="btn btn-outline-danger my-3" style="width: 100%" type="submit" id="clearBtn">Clear History</button>
 
         <!-- past searches -->
-        <section class="border-top border-danger" id="past-searches"></section>
+        <section class="border-top border-danger" id="previous-searches"></section>
 
       </aside>
-
+      <!--  -->
       <section class="column col-9">
-        <div class="row rounded-bottom" id="currentConditions"></div>
-        <h2 class="row" id="fiveDayForecastHeader"></h2>
+        <div class="row rounded-bottom" id="currentWeather"></div>
+        <h2 class="row" id="forecastHeader"></h2>
         <figure class=" container-fluid d-flex flex-wrap flex-row justify-content-between" id="fiveDayForecast"></figure>
       </section>
 

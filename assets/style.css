@@ -25,3 +25,6 @@ box-shadow: 10px 10px 15px rgb(97, 97, 97);;
  transition: all .4s;
 }
 
+#currentDay{
+    float: right;
+}
